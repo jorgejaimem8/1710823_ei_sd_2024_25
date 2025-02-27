@@ -1,1 +1,4 @@
-# 1710823_ei_sd_2024_25
+# Jorge Modrego, Engenharia Informática, 1710823
+## Sistemas Distribuidos 
+O que é um sistema distribuído? 
+O que é um cluster de máquinas?
