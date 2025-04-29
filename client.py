@@ -10,6 +10,13 @@ def verificar_inclusion(file_path: str):
 
     dato = lines[0].split(": ")[1]
     dato_hash = hash_function(dato.encode())
+    dato_hash_esperado = lines[1].split(": ")[1]
+
+    # Verificamos que el dato no haya sido manipulado
+    if dato_hash != dato_hash_esperado:
+        print(f"❌ El dato '{dato}' NO coincide con el hash registrado.")
+        return
+
     camino = lines[3:-1]
     raiz_esperada = lines[-1].split(": ")[1]
 
