@@ -1,4 +1,7 @@
 # Jorge Modrego, Engenharia Informática, 1710823
 ## Sistemas Distribuidos 
-O que é um sistema distribuído? 
-O que é um cluster de máquinas?
+
+uvicorn webservice:app --reload
+python .\middleware.py
+python .\client.py
+
