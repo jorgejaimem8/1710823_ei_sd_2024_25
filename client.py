@@ -14,7 +14,7 @@ def verificar_inclusion(file_path: str):
 
     # Verificamos que el dato no haya sido manipulado
     if dato_hash != dato_hash_esperado:
-        print(f"❌ El dato '{dato}' NO coincide con el hash registrado.")
+        print(f"El dato '{dato}' NO coincide con el hash registrado.")
         return
 
     camino = lines[3:-1]
@@ -29,9 +29,9 @@ def verificar_inclusion(file_path: str):
             actual_hash = hash_function((actual_hash + h).encode())
 
     if actual_hash == raiz_esperada:
-        print(f"✅ El dato '{dato}' está incluido.")
+        print(f"El dato '{dato}' está incluido.")
     else:
-        print(f"❌ El dato '{dato}' NO está incluido.")
+        print(f"El dato '{dato}' NO está incluido.")
 
 if __name__ == "__main__":
     carpeta_cliente = "client"

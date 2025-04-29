@@ -25,13 +25,13 @@ def leer_ficheros_directorio(directorio: str) -> List[str]:
 def enviar_datos_a_webservice(datos):
     response = requests.post(WEB_URL, json={"datos": datos})
     if response.status_code == 200:
-        print("✅ Webservice procesó correctamente los datos.")
+        print("Webservice procesó correctamente los datos.")
         if not os.path.exists("cliente"):
             os.makedirs("cliente")
         for i in range(len(datos)):
             shutil.copy(f"middleware/{i}.txt", f"client/{i}.txt")
     else:
-        print("❌ Error en el Webservice:", response.json())
+        print("Error en el Webservice:", response.json())
 
 if __name__ == "__main__":
     carpeta = "client_entry"

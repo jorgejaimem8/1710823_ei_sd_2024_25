@@ -1,6 +1,6 @@
-Dato original: are
-Hash del dato: ba78973ddcf98d4e5369f5e722d681d94f5106895e5d6cf6fa3ca8240fabdc14
+Dato original: are 6
+Hash del dato: 67d5c4d82305bc52d52a2d77a03146694dd9bc4c2f053e6aaf1d9505e84ff431
 Camino hacia la raíz (hash,direccion):
 c5135167dd115908f6cba5b9438642f7762ce8f10c78e186509461608fcd3a95,right
-80b21c135caacb90b85263e3ba272f1b9b6c427355a225532edbf31cecca9e7a,left
-Hash raíz: 6085cfc903a0d2aef1c457797e7c1befb2cb6e58c3310a8394af8f935779efe3
+b8c5f6ffa600080a4ef476306e5d7429f851e3d1fc7383a8691004c0beca1d8f,left
+Hash raíz: 6a1bd01e60178b1b6ecbdbbd594d16e51368517ac79d5a9062ee8a15bfa3a976
