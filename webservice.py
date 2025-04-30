@@ -15,26 +15,34 @@ def hash_function(data: bytes) -> str:
 
 # Construye el árbol de Merkle completo
 def build_merkle_tree(leaves: List[str]) -> List[List[str]]:
+    #Generamos el nivel 0 de hojas
     tree = [list(map(lambda d: hash_function(d.encode()), leaves))]
+    # Generamos los niveles superiores del árbol hasta la raiz
     while len(tree[-1]) > 1:
         level = []
         current_level = tree[-1]
+        #Combinamos nodos en parejas para crear el siguiente nivel
         for i in range(0, len(current_level), 2):
             left = current_level[i]
             right = current_level[i+1]
             parent_hash = hash_function((left + right).encode())
             level.append(parent_hash)
+        # Añadimos el nuevo nivel al árbol
         tree.append(level)
     return tree
 
 # Genera el camino hasta la raíz para un índice dado
 def get_merkle_path(tree: List[List[str]], index: int) -> List[Tuple[str, str]]:
     path = []
+    # Recorremos el árbol desde la hoja hasta antes de la raíz
     for level in tree[:-1]:
+        # Obtenemos el indice del nodo hermano
         sibling_index = index ^ 1
+        # Si el índice del hermano es menor que la longitud del nivel, lo añadimos al camino
         if sibling_index < len(level):
             direction = 'left' if sibling_index < index else 'right'
             path.append((level[sibling_index], direction))
+        # Actualizamos el índice para el siguiente nivel
         index //= 2
     return path
 
