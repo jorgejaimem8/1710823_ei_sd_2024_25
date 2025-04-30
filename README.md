@@ -73,7 +73,7 @@ Cada archivo debe contener un único string/plano de datos.
 
 3. Ejecutar el Middleware
 El middleware lee los archivos desde client_entry/, envía los datos al webservice, y copia los archivos de inclusión generados a la carpeta client/.
-ESTOS DEBEN LLAMARSE: 0.txt, 1.txt...,7.txt,...,2^n.txt
+ESTOS DEBEN LLAMARSE: 0.txt, 1.txt...,7.txt,...,2^n-1.txt
 
 python middleware.py
 
