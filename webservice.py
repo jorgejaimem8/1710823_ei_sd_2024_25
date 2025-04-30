@@ -47,23 +47,28 @@ def generate_inclusion_files(input_data: DataInput):
     if len(data) == 0 or (len(data) & (len(data)-1)) != 0:
         raise HTTPException(status_code=400, detail="Debe proporcionar 2^n elementos.")
 
+    # Directorio de salida
     output_dir = "middleware"
     os.makedirs(output_dir, exist_ok=True)
 
+    # Construcción del árbol de Merkle
     tree = build_merkle_tree(data)
     root = tree[-1][0]
 
-    for i, datum in enumerate(data):
+    # Creación de los ficheros individuales con los datos necesarios
+    # para el arbol de Merkle
+    for i, dato in enumerate(data):
         path = get_merkle_path(tree, i)
         file_path = os.path.join(output_dir, f"{i}.txt")
         with open(file_path, "w") as f:
-            f.write(f"Dato original: {datum}\n")
-            f.write(f"Hash del dato: {hash_function(datum.encode())}\n")
+            f.write(f"Dato original: {dato}\n")
+            f.write(f"Hash del dato: {hash_function(dato.encode())}\n")
             f.write("Camino hacia la raíz (hash,direccion):\n")
             for h, dir in path:
                 f.write(f"{h},{dir}\n")
             f.write(f"Hash raíz: {root}\n")
 
+    # Respuesta JSON del endpoint
     return {
         "status": "OK",
         "hash_raiz": root,
