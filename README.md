@@ -1,38 +1,30 @@
 # Jorge Modrego, Engenharia Informática, 1710823
 ## Sistemas Distribuidos 
 
-Verificador de Inclusión de Datos en Árboles de Merkle:
+# Verificador de Inclusión de Datos en Árboles de Merkle:
 
 Este proyecto implementa un sistema distribuido para construir árboles de Merkle a partir de datos proporcionados, generar pruebas de inclusión y verificarlas posteriormente. El sistema está compuesto por tres módulos principales:
 
 webservice.py: Servicio web que construye el árbol de Merkle y genera archivos de inclusión.
 
-middleware.py: Cliente intermedio que prepara los datos y los envía al servicio web.
+middleware.py: Cliente intermedio que prepara los datos, los envía al servicio web y los distribuye en las carpetas middleware
 
 client.py: Cliente final que verifica la validez de los datos y su inclusión en el árbol.
 
 
 
 
-Requisitos
+ # Requisitos
 
-Python 3.8 o superior
-
-fastapi
-
-uvicorn
-
-requests
-
-Puedes instalar las dependencias necesarias ejecutando:
-pip install fastapi uvicorn requests
+- Python 3.7+
+- CherryPy (`pip install cherrypy`)
+- Requests (`pip install requests`)
 
 
 
 
 
-
-Estructura del Proyecto:
+# Estructura del Proyecto:
 
 -webservice.py        Servicio web (FastAPI)
 -middleware.py        Cliente intermedio
@@ -46,7 +38,7 @@ Estructura del Proyecto:
 
 
 
-Ejecución del Proyecto:
+# Ejecución del Proyecto:
 
 
 
@@ -54,7 +46,7 @@ Ejecución del Proyecto:
 
 Ejecuta el servicio web en un puerto local (por ejemplo, 8000):
 
-uvicorn webservice:app --reload
+python webservice.py
 
 
 2. Preparar los Datos

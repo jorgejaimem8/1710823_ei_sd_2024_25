@@ -4,7 +4,7 @@ import shutil
 from typing import List
 
 # Dirección del Webservice el cual esta en local
-WEB_URL = "http://localhost:8000/generate"
+WEB_URL = "http://localhost:8080/generate"
 
 # Función que lee los archivos de la carpeta en la que los inserta el cliente
 # y los pasa a una lista

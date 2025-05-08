@@ -1,84 +1,78 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from typing import List, Tuple
+import cherrypy
 import hashlib
 import os
+import json
 
-app = FastAPI()
-
-class DataInput(BaseModel):
-    datos: List[str]
-
-# Función de hash (SHA-256)
+# Función de hash SHA-256
 def hash_function(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
-# Construye el árbol de Merkle completo
-def build_merkle_tree(leaves: List[str]) -> List[List[str]]:
-    #Generamos el nivel 0 de hojas
+# Genera el árbol, nivel por nivel, combinando hashes adyacentes.
+def build_merkle_tree(leaves):
     tree = [list(map(lambda d: hash_function(d.encode()), leaves))]
-    # Generamos los niveles superiores del árbol hasta la raiz
     while len(tree[-1]) > 1:
         level = []
         current_level = tree[-1]
-        #Combinamos nodos en parejas para crear el siguiente nivel
         for i in range(0, len(current_level), 2):
             left = current_level[i]
-            right = current_level[i+1]
+            right = current_level[i + 1]
             parent_hash = hash_function((left + right).encode())
             level.append(parent_hash)
-        # Añadimos el nuevo nivel al árbol
         tree.append(level)
     return tree
 
-# Genera el camino hasta la raíz para un índice dado
-def get_merkle_path(tree: List[List[str]], index: int) -> List[Tuple[str, str]]:
+# Calcula el camino de verificación para cada dato (es decir, 
+# los hashes de los nodos hermanos necesarios para reconstruir la raíz).
+def get_merkle_path(tree, index):
     path = []
-    # Recorremos el árbol desde la hoja hasta antes de la raíz
     for level in tree[:-1]:
-        # Obtenemos el indice del nodo hermano
         sibling_index = index ^ 1
-        # Si el índice del hermano es menor que la longitud del nivel, lo añadimos al camino
         if sibling_index < len(level):
             direction = 'left' if sibling_index < index else 'right'
             path.append((level[sibling_index], direction))
-        # Actualizamos el índice para el siguiente nivel
         index //= 2
     return path
 
-# Endpoint principal
-@app.post("/generate")
-def generate_inclusion_files(input_data: DataInput):
-    data = input_data.datos
+# Servicio web RESTful con CherryPy que acepta entradas con formato JSON
+class MerkleWebService:
 
-    # Verifica que el número de datos sea potencia de 2
-    if len(data) == 0 or (len(data) & (len(data)-1)) != 0:
-        raise HTTPException(status_code=400, detail="Debe proporcionar 2^n elementos.")
+    @cherrypy.expose
+    @cherrypy.tools.json_in()
+    @cherrypy.tools.json_out()
+    def generate(self):
+        input_data = cherrypy.request.json
+        datos = input_data.get("datos", [])
 
-    # Directorio de salida
-    output_dir = "middleware"
-    os.makedirs(output_dir, exist_ok=True)
+        if len(datos) == 0 or (len(datos) & (len(datos) - 1)) != 0:
+            cherrypy.response.status = 400
+            return {"error": "Debe proporcionar 2^n elementos."}
 
-    # Construcción del árbol de Merkle
-    tree = build_merkle_tree(data)
-    root = tree[-1][0]
+        output_dir = "middleware"
+        os.makedirs(output_dir, exist_ok=True)
 
-    # Creación de los ficheros individuales con los datos necesarios
-    # para el arbol de Merkle
-    for i, dato in enumerate(data):
-        path = get_merkle_path(tree, i)
-        file_path = os.path.join(output_dir, f"{i}.txt")
-        with open(file_path, "w") as f:
-            f.write(f"Dato original: {dato}\n")
-            f.write(f"Hash del dato: {hash_function(dato.encode())}\n")
-            f.write("Camino hacia la raíz (hash,direccion):\n")
-            for h, dir in path:
-                f.write(f"{h},{dir}\n")
-            f.write(f"Hash raíz: {root}\n")
+        tree = build_merkle_tree(datos)
+        root = tree[-1][0]
 
-    # Respuesta JSON del endpoint
-    return {
-        "status": "OK",
-        "hash_raiz": root,
-        "archivos_generados": len(data)
-    }
+        for i, dato in enumerate(datos):
+            path = get_merkle_path(tree, i)
+            file_path = os.path.join(output_dir, f"{i}.txt")
+            with open(file_path, "w") as f:
+                f.write(f"Dato original: {dato}\n")
+                f.write(f"Hash del dato: {hash_function(dato.encode())}\n")
+                f.write("Camino hacia la raíz (hash,direccion):\n")
+                for h, dir in path:
+                    f.write(f"{h},{dir}\n")
+                f.write(f"Hash raíz: {root}\n")
+
+        return {
+            "status": "OK",
+            "hash_raiz": root,
+            "archivos_generados": len(datos)
+        }
+
+if __name__ == '__main__':
+    cherrypy.config.update({
+        'server.socket_host': '127.0.0.1',
+        'server.socket_port': 8080
+    })
+    cherrypy.quickstart(MerkleWebService())
