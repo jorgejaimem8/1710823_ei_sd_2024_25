@@ -44,7 +44,7 @@ client.py: Cliente final que verifica la validez de los datos y su inclusión en
 
 1. Iniciar el Webservice
 
-Ejecuta el servicio web en un puerto local (por ejemplo, 8000):
+Ejecuta el servicio web en un puerto local (por ejemplo, 8080):
 
 python webservice.py
 
